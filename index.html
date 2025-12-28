@@ -6,13 +6,14 @@
 <title>Demo PalmPay-style Dashboard</title>
 <style>
   :root {
-    --bg: #0c0c0f;
-    --panel: #0f1720;
+    --bg: #0f0f12;
+    --panel: #17171c;
     --muted: #9aa2b2;
     --purple: #7c3aed;
     --purple-2: #5b21b6;
-    --card: #111217;
+    --card: #17171c;
     --accent: #ffd166;
+    --receipt-bg: #17171c;
   }
   [data-theme="light"] {
     --bg: #f5f5f7;
@@ -32,7 +33,12 @@
     color: var(--text-color, #fff); 
     -webkit-font-smoothing: antialiased; 
     overflow-x: hidden;
+    line-height: 1.5;
     transition: background-color 0.3s ease, color 0.3s ease;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   [data-theme="light"] {
     --text-color: #111;
@@ -367,6 +373,8 @@
     overflow-y: auto; 
     padding: 0; 
     transition: background 0.3s ease;
+    justify-content: center;
+    align-items: center;
   }
   .success-screen.active { display: flex; }
   .receipt-top-bar { 
@@ -393,68 +401,123 @@
     color: var(--text-color, #fff);
     transition: color 0.3s ease;
   }
-  .receipt-container { 
-    background: var(--receipt-bg, #0c0c0f); 
-    padding: 16px; 
-    border-radius: 12px; 
-    margin: 0 12px 12px 12px; 
+  .receipt-container {
+    background: var(--receipt-bg, #17171c);
+    padding: 24px;
+    border-radius: 20px;
+    margin: 0 12px 12px 12px;
     transition: background 0.3s ease;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100dvh - 180px);
+    scroll-behavior: smooth;
+  }
+  .receipt-container::before {
+    content: "PalmPay  PalmPay  PalmPay  PalmPay";
+    position: absolute;
+    inset: 0;
+    color: rgba(255,255,255,0.03);
+    font-size: 40px;
+    transform: rotate(-20deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
   }
   [data-theme="light"] {
     --receipt-bg: #ffffff;
   }
-  .receipt-logo { 
-    display: flex; 
-    align-items: center; 
-    gap: 6px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    margin-bottom: 16px; 
+  .receipt-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-amount { 
-    font-size: 32px; 
-    font-weight: bold; 
-    color: var(--purple); 
-    text-align: center; 
-    margin-bottom: 8px; 
+  .receipt-amount {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #7c6cff;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-status { 
-    font-size: 18px; 
-    text-align: center; 
-    margin-bottom: 4px; 
+  .receipt-status {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 2;
+  }
+  .receipt-date {
+    text-align: center;
+    font-size: 13px;
+    color: #b3b3b3;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .divider {
+    border-top: 1px dashed #2a2a2f;
+    margin: 18px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+  .label {
+    color: #cfcfcf;
+    font-size: 14px;
+  }
+  .value {
+    text-align: right;
+    font-size: 14px;
+  }
+  .value strong {
+    display: block;
+    font-weight: 600;
     color: var(--text-color, #fff);
     transition: color 0.3s ease;
   }
-  .receipt-date { 
-    color: var(--muted); 
-    font-size: 12px; 
-    text-align: center; 
-    margin-bottom: 24px; 
+  .sub {
+    font-size: 13px;
+    color: #a6a6a6;
+    margin-top: 2px;
   }
-  .receipt-section { 
-    margin-bottom: 24px; 
+  [data-theme="light"] .label {
+    color: #666;
   }
-  .receipt-label { 
-    color: var(--muted); 
-    font-size: 14px; 
-    margin-bottom: 4px; 
+  [data-theme="light"] .sub {
+    color: #888;
   }
-  .receipt-value { 
-    font-size: 14px; 
-    font-weight: 600; 
-    color: var(--text-color, #fff);
-    transition: color 0.3s ease;
+  .section-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-sub-value { 
-    color: var(--muted); 
-    font-size: 12px; 
-    margin-top: 2px; 
+  .receipt-footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: #9b9b9b;
+    margin-top: 20px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-info-row { 
-    display: flex; 
-    justify-content: space-between; 
-    margin-bottom: 8px; 
-  }
+  
   .receipt-info-label { 
     color: var(--muted); 
     font-size: 12px; 
@@ -465,6 +528,7 @@
     max-width: 60%; 
     color: var(--text-color, #fff);
     transition: color 0.3s ease;
+    font-family: 'Courier New', monospace;
   }
   .receipt-footer-note { 
     color: var(--purple); 
@@ -472,6 +536,46 @@
     text-align: center; 
     margin-top: 24px; 
     margin-bottom: 24px; 
+    z-index: 1;
+    position: relative;
+    letter-spacing: 0.5px;
+  }
+  .divider {
+    border-top: 1px dashed #2a2a2f;
+    margin: 18px 0;
+    z-index: 1;
+    position: relative;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    z-index: 1;
+    position: relative;
+  }
+  .label {
+    color: #cfcfcf;
+    font-size: 14px;
+  }
+  .value {
+    text-align: right;
+    font-size: 14px;
+  }
+  .value strong {
+    display: block;
+    font-weight: 600;
+    color: #fff;
+  }
+  .sub {
+    font-size: 13px;
+    color: #a6a6a6;
+    margin-top: 2px;
+  }
+  .section-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    z-index: 1;
+    position: relative;
   }
   .receipt-gifts { 
     display: flex; 
@@ -670,6 +774,15 @@
     to { transform: translate(-50%, -50%) rotate(360deg); }
   }
 </style>
+<!-- PWA Configuration -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c3aed">
+<meta name="description" content="A fast, secure banking dashboard with Paystack integration">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%237c3aed' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='sans-serif'>P</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%237c3aed' width='180' height='180' rx='40'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='sans-serif'>P</text></svg>">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PalmPay">
 </head>
 <body>
 <div class="app" id="app">
@@ -692,6 +805,11 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M3 13a9 9 0 0118 0v4a2 2 0 01-2 2h-1a1 1 0 01-1-1v-5a4 4 0 00-8 0v5a1 1 0 01-1 1H6a2 2 0 01-2-2v-4z"/></svg>
       </div>
       <div class="icon-btn" title="Notifications"> <span style="font-weight:800;color:#ff3b30;font-size:11px">99+</span></div>
+      <div class="icon-btn" id="installBtn" title="Install App" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        </svg>
+      </div>
     </div>
   </header>
 
@@ -708,7 +826,7 @@
         <div class="balance-value" id="balanceDisplay">₦556,489.00</div>
       </div>
       <div class="balance-actions">
-        <button class="add-money" id="btnAddMoney">Add Money ▸</button>
+        <button class="add-money" id="btnAddMoney">Receive Money ▸</button>
       </div>
     </div>
     <button class="transaction-history" id="btnHistory">Transaction History</button>
@@ -780,12 +898,25 @@
   <!-- Recent Transactions - Hidden, now shown on separate page -->
   <!-- Transfer To Bank form moved to To Bank.html -->
 
+  <!-- Refund Form (hidden by default) -->
+  <div class="form-card" id="refundForm">
+    <input type="text" id="refundReasonInput" placeholder="Refund Reason (optional)" value="Refund">
+    <input type="number" id="refundAmountInput" placeholder="₦ Amount" required>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="primary" id="processRefundBtn" style="flex:1">Process Refund</button>
+      <button type="button" class="small-btn ghost" id="cancelRefund" style="flex:1">Cancel</button>
+    </div>
+    <div id="refundStatus" class="status"></div>
+  </div>
+
   <!-- Add Money Form (hidden by default) -->
   <div class="form-card" id="addMoneyForm">
-    <input type="text" id="recipientInput" placeholder="Sender Name (e.g., Top Up)" value="Top Up">
+    <input type="text" id="senderNameInput" placeholder="Sender Name" required>
+    <input type="text" id="senderBankInput" placeholder="Sender Bank" required>
+    <input type="text" id="senderAccountInput" placeholder="Sender Account Number" required>
     <input type="number" id="amountInput" placeholder="₦ Amount" required>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="primary" id="receiveBtn" style="flex:1">Add Money</button>
+      <button class="primary" id="receiveBtn" style="flex:1">Receive Money</button>
       <button type="button" class="small-btn ghost" id="cancelAddMoney" style="flex:1">Cancel</button>
     </div>
     <div id="addMoneyStatus" class="status"></div>
@@ -865,9 +996,18 @@ const formStatus = document.getElementById('formStatus');
 const addMoneyForm = document.getElementById('addMoneyForm');
 const receiveBtn = document.getElementById('receiveBtn');
 const cancelAddMoney = document.getElementById('cancelAddMoney');
-const recipientInput = document.getElementById('recipientInput');
+const senderNameInput = document.getElementById('senderNameInput');
+const senderBankInput = document.getElementById('senderBankInput');
+const senderAccountInput = document.getElementById('senderAccountInput');
 const amountInput = document.getElementById('amountInput');
 const addMoneyStatus = document.getElementById('addMoneyStatus');
+
+const refundForm = document.getElementById('refundForm');
+const processRefundBtn = document.getElementById('processRefundBtn');
+const cancelRefund = document.getElementById('cancelRefund');
+const refundReasonInput = document.getElementById('refundReasonInput');
+const refundAmountInput = document.getElementById('refundAmountInput');
+const refundStatus = document.getElementById('refundStatus');
 const withdrawForm = document.getElementById('withdrawForm');
 const submitWithdraw = document.getElementById('submitWithdraw');
 const cancelWithdraw = document.getElementById('cancelWithdraw');
@@ -923,7 +1063,7 @@ const senderAccountMask = '904***9211';
 
 /* helpers */
 function genId() { return Math.random().toString(36).slice(2, 14); }
-function genSessId() { return Math.floor(Math.random() * 1e15) + ' ' + Math.floor(Math.random() * 1e16); }
+function genSessId() { return Math.floor(Math.random() * 1e15) + ' ' + Math.floor(Math.random() * 1e14); }
 function saveState() { localStorage.setItem(LS_BAL, balance); localStorage.setItem(LS_TX, JSON.stringify(transactions)); }
 function formatNGN(n) { return '₦ ' + Number(n).toLocaleString('en-NG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function getFormattedDate(ts) {
@@ -954,12 +1094,22 @@ btnClaim.addEventListener('click', () => {
   setTimeout(() => { closeStatus(); }, 2000);
 });
 
+function openRefundForm() {
+  refundForm.classList.add('active');
+  refundReasonInput.value = 'Refund';
+  refundAmountInput.value = '';
+  refundAmountInput.focus();
+  showStatus('Enter refund amount', true, refundStatus);
+}
+
 function openAddMoneyQuick() {
   addMoneyForm.classList.add('active');
-  recipientInput.value = 'Top Up';
+  senderNameInput.value = '';
+  senderBankInput.value = '';
+  senderAccountInput.value = '';
   amountInput.value = '';
-  amountInput.focus();
-  showStatus('Enter amount and press "Add Money"', true, addMoneyStatus);
+  senderNameInput.focus();
+  showStatus('Enter sender details', true, addMoneyStatus);
 }
 
 /* send / add money / withdraw logic */
@@ -985,7 +1135,7 @@ if (withdrawBtn && withdrawForm) {
 const refundBtn = document.getElementById('refund');
 if (refundBtn) {
   refundBtn.addEventListener('click', () => {
-    openAddMoneyQuick();
+    openRefundForm();
   });
 }
 
@@ -1485,7 +1635,7 @@ bankAcct.addEventListener('input', (e) => {
   }
 });
 
-submitTransfer.addEventListener('click', async () => {
+submitTransfer.add
   const bName = selectedBankName || bankSearch.value.trim();
   const bAcct = bankAcct.value.trim();
   const aName = accountName.value.trim();
@@ -1527,48 +1677,64 @@ submitTransfer.addEventListener('click', async () => {
 
   balance = +(balance - amount).toFixed(2);
   const now = Date.now();
-  const tx = { id: genId(), name: `Interbank to ${aName} (${bName})`, amount: -amount, time: now };
+  const sessId = genSessId();
+  const tx = { id: genId(), name: `Interbank to ${aName} (${bName})`, amount: -amount, time: now, sessId: sessId };
   transactions.unshift(tx);
   saveState();
   renderAll();
 
-  const sessId = genSessId();
   receiptDetails.innerHTML = `
-    <div class="receipt-logo">
-      <span style="color:var(--purple);">◎</span> PalmPay
-    </div>
+    <div class="receipt-logo">PalmPay</div>
+
     <div class="receipt-amount">${formatNGN(amount)}</div>
     <div class="receipt-status">Successful Transaction</div>
     <div class="receipt-date">${getFormattedDate(now)}</div>
-    <div class="receipt-section">
-      <div class="receipt-label">Recipient:</div>
-      <div class="receipt-value">${aName}</div>
-      <div class="receipt-sub-value">${bName} | ${bAcct}</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Sender:</div>
-      <div class="receipt-value">${userName.toUpperCase()}</div>
-      <div class="receipt-sub-value">PalmPay | ${senderAccountMask}</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Transaction Info:</div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction Type</div>
-        <div class="receipt-info-value">Money Transfer - Bank account</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction ID</div>
-        <div class="receipt-info-value">${tx.id}</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Session ID</div>
-        <div class="receipt-info-value">${sessId}</div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Recipient:</div>
+      <div class="value">
+        <strong>${aName}</strong>
+        <div class="sub">${bName} | ${bAcct}</div>
       </div>
     </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Sender:</div>
+      <div class="value">
+        <strong>${userName.toUpperCase()}</strong>
+        <div class="sub">PalmPay | ${senderAccountMask}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Transaction Info:</div>
+
+    <div class="row">
+      <div class="label">Transaction Type</div>
+      <div class="value">Money Transfer - Bank account</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Transaction ID</div>
+      <div class="value">${tx.id}</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Session ID</div>
+      <div class="value">
+        ${sessId.slice(0, 15)}<br/>
+        ${sessId.slice(15)}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="receipt-footer-note">Enjoy Seamless and Unlimited Free Transfers to All Banks.</div>
-    <div class="receipt-gifts">
-     
-    </div>
   `;
   // sendForm removed - code moved to To Bank.html
   submitTransfer.classList.remove('loading');
@@ -1602,10 +1768,18 @@ cancelTransfer.addEventListener('click', () => {
 
 // Add Money functionality (still in index.html)
 receiveBtn.addEventListener('click', async () => {
-  const senderName = recipientInput.value.trim() || 'Top Up';
+  const senderName = senderNameInput.value.trim();
+  const senderBank = senderBankInput.value.trim();
+  const senderAccount = senderAccountInput.value.trim();
   const amount = parseFloat(amountInput.value || '0');
-  if (!amount || amount <= 0) {
-    showStatus('Enter valid amount', false, addMoneyStatus);
+  
+  if (!senderName || !senderBank || !senderAccount || !amount || amount <= 0) {
+    showStatus('Please fill all fields with valid details', false, addMoneyStatus);
+    return;
+  }
+  
+  if (!/^\d{10}$/.test(senderAccount.replace(/\D/g, ''))) {
+    showStatus('Sender account number must be 10 digits', false, addMoneyStatus);
     return;
   }
 
@@ -1614,50 +1788,76 @@ receiveBtn.addEventListener('click', async () => {
 
   balance = +(balance + amount).toFixed(2);
   const now = Date.now();
-  const tx = { id: genId(), name: `Refunded from ${senderName}`, amount: +amount, time: now };
+  const sessId = genSessId();
+  const tx = { 
+    id: genId(), 
+    name: `Interbank Transfer`, 
+    amount: +amount, 
+    time: now,
+    senderName: senderName,
+    senderBank: senderBank,
+    senderAccount: senderAccount,
+    sessId: sessId
+  };
   transactions.unshift(tx);
   saveState();
   renderAll();
-  showStatus(`Money added: Received ${formatNGN(amount)} from ${senderName}`, true, addMoneyStatus);
+  showStatus(`Money received: ${formatNGN(amount)} from ${senderName} (${senderBank})`, true, addMoneyStatus);
   addMoneyForm.classList.remove('active');
   receiveBtn.classList.remove('loading');
 
-  const sessId = genSessId();
   receiptDetails.innerHTML = `
-    <div class="receipt-logo">
-      <span style="color:var(--purple);">◎</span> PalmPay
-    </div>
+    <div class="receipt-logo">PalmPay</div>
+
     <div class="receipt-amount">${formatNGN(amount)}</div>
     <div class="receipt-status">Successful Transaction</div>
     <div class="receipt-date">${getFormattedDate(now)}</div>
-    <div class="receipt-section">
-      <div class="receipt-label">Recipient:</div>
-      <div class="receipt-value">${userName.toUpperCase()}</div>
-      <div class="receipt-sub-value">PalmPay | ${senderAccountMask}</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Sender:</div>
-      <div class="receipt-value">${senderName}</div>
-      <div class="receipt-sub-value">Top Up</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Transaction Info:</div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction Type</div>
-        <div class="receipt-info-value">Money Transfer - Top Up</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction ID</div>
-        <div class="receipt-info-value">${tx.id}</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Session ID</div>
-        <div class="receipt-info-value">${sessId}</div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Recipient:</div>
+      <div class="value">
+        <strong>${userName.toUpperCase()}</strong>
+        <div class="sub">PalmPay | ${senderAccountMask}</div>
       </div>
     </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Sender:</div>
+      <div class="value">
+        <strong>${senderName.toUpperCase()}</strong>
+        <div class="sub">${senderBank} | ${senderAccount}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Transaction Info:</div>
+
+    <div class="row">
+      <div class="label">Transaction Type</div>
+      <div class="value">Interbank Transfer - Received</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Transaction ID</div>
+      <div class="value">${tx.id}</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Session ID</div>
+      <div class="value">
+        ${sessId.slice(0, 15)}<br/>
+        ${sessId.slice(15)}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="receipt-footer-note">Enjoy Seamless and Unlimited Free Transfers to All Banks.</div>
-    <div class="receipt-gifts">
-    </div>
   `;
   successScreen.classList.add('active');
   attachReceiptActions();
@@ -1665,9 +1865,96 @@ receiveBtn.addEventListener('click', async () => {
 
 cancelAddMoney.addEventListener('click', () => {
   addMoneyForm.classList.remove('active');
-  recipientInput.value = '';
+  senderNameInput.value = '';
+  senderBankInput.value = '';
+  senderAccountInput.value = '';
   amountInput.value = '';
   addMoneyStatus.textContent = '';
+});
+
+processRefundBtn.addEventListener('click', async () => {
+  const refundReason = refundReasonInput.value.trim() || 'Refund';
+  const amount = parseFloat(refundAmountInput.value || '0');
+  if (!amount || amount <= 0) {
+    showStatus('Enter valid refund amount', false, refundStatus);
+    return;
+  }
+
+  processRefundBtn.classList.add('loading');
+  await new Promise(resolve => setTimeout(resolve, 1000));
+
+  balance = +(balance + amount).toFixed(2);
+  const now = Date.now();
+  const sessId = genSessId();
+  const tx = { id: genId(), name: `Refunded from ${refundReason}`, amount: +amount, time: now, sessId: sessId };
+  transactions.unshift(tx);
+  saveState();
+  renderAll();
+  showStatus(`Refund processed: Received ${formatNGN(amount)} for ${refundReason}`, true, refundStatus);
+  refundForm.classList.remove('active');
+  processRefundBtn.classList.remove('loading');
+  receiptDetails.innerHTML = `
+    <div class="receipt-logo">PalmPay</div>
+
+    <div class="receipt-amount">${formatNGN(amount)}</div>
+    <div class="receipt-status">Successful Transaction</div>
+    <div class="receipt-date">${getFormattedDate(now)}</div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Recipient:</div>
+      <div class="value">
+        <strong>${userName.toUpperCase()}</strong>
+        <div class="sub">PalmPay | ${senderAccountMask}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Sender:</div>
+      <div class="value">
+        <strong>${refundReason}</strong>
+        <div class="sub">Refund</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Transaction Info:</div>
+
+    <div class="row">
+      <div class="label">Transaction Type</div>
+      <div class="value">Refund</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Transaction ID</div>
+      <div class="value">${tx.id}</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Session ID</div>
+      <div class="value">
+        ${sessId.slice(0, 15)}<br/>
+        ${sessId.slice(15)}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="receipt-footer-note">Enjoy Seamless and Unlimited Free Transfers to All Banks.</div>
+  `;
+  successScreen.classList.add('active');
+  attachReceiptActions();
+});
+
+cancelRefund.addEventListener('click', () => {
+  refundForm.classList.remove('active');
+  refundReasonInput.value = '';
+  refundAmountInput.value = '';
+  refundStatus.textContent = '';
 });
 
 submitWithdraw.addEventListener('click', async () => {
@@ -1701,45 +1988,57 @@ submitWithdraw.addEventListener('click', async () => {
 
   const sessId = genSessId();
   receiptDetails.innerHTML = `
-    <div class="receipt-logo">
-      <span style="color:var(--purple);">◎</span> PalmPay
-    </div>
+    <div class="receipt-logo">PalmPay</div>
+
     <div class="receipt-amount">${formatNGN(amount)}</div>
     <div class="receipt-status">Successful Transaction</div>
     <div class="receipt-date">${getFormattedDate(now)}</div>
-    <div class="receipt-section">
-      <div class="receipt-label">Recipient:</div>
-      <div class="receipt-value">${aName}</div>
-      <div class="receipt-sub-value">${bName} | ${bAcct}</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Sender:</div>
-      <div class="receipt-value">${userName.toUpperCase()}</div>
-      <div class="receipt-sub-value">PalmPay | ${senderAccountMask}</div>
-    </div>
-    <div class="receipt-section">
-      <div class="receipt-label">Transaction Info:</div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction Type</div>
-        <div class="receipt-info-value">Money Transfer - Withdraw to Bank account</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Transaction ID</div>
-        <div class="receipt-info-value">${tx.id}</div>
-      </div>
-      <div class="receipt-info-row">
-        <div class="receipt-info-label">Session ID</div>
-        <div class="receipt-info-value">${sessId}</div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Recipient:</div>
+      <div class="value">
+        <strong>${aName}</strong>
+        <div class="sub">${bName} | ${bAcct}</div>
       </div>
     </div>
+
+    <div class="divider"></div>
+
+    <div class="row">
+      <div class="label">Sender:</div>
+      <div class="value">
+        <strong>${userName.toUpperCase()}</strong>
+        <div class="sub">PalmPay | ${senderAccountMask}</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-title">Transaction Info:</div>
+
+    <div class="row">
+      <div class="label">Transaction Type</div>
+      <div class="value">Money Transfer - Withdraw to Bank account</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Transaction ID</div>
+      <div class="value">${tx.id}</div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+      <div class="label">Session ID</div>
+      <div class="value">
+        ${sessId.slice(0, 15)}<br/>
+        ${sessId.slice(15)}
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
     <div class="receipt-footer-note">Enjoy Seamless and Unlimited Free Transfers to All Banks.</div>
-    <div class="receipt-gifts">
-      <button class="gift-btn">✅ Receipt</button>
-      <button class="gift-btn">🎁 Wishes</button>
-      <button class="gift-btn">🎂 Birthday</button>
-      <button class="gift-btn">💕 Valentine</button>
-      <button class="gift-btn">💒 Wedding</button>
-    </div>
   `;
   withdrawForm.classList.remove('active');
   submitWithdraw.classList.remove('loading');
@@ -1810,7 +2109,7 @@ function renderAll() { renderBalance(); }
 renderAll();
 
 /* click outside to close */
-[addMoneyForm, withdrawForm].forEach(el => {
+[addMoneyForm, withdrawForm, refundForm].forEach(el => {
   if (el) {
     el.addEventListener('click', (e) => {
       if (e.target === el) {
@@ -1832,11 +2131,56 @@ document.querySelectorAll('.nav-item').forEach(item => {
 /* export sample */
 (function attachDemoClicks() {
   document.querySelectorAll('.action').forEach(el => {
-    if (el.id !== 'toBank' && el.id !== 'withdraw') {
+    if (el.id !== 'toBank' && el.id !== 'withdraw' && el.id !== 'refund') {
       el.addEventListener('click', () => { showStatus('Feature demo: ' + el.textContent.trim(), true, formStatus); });
     }
   });
 })();
+</script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('✓ Service Worker registered:', registration.scope);
+      })
+      .catch(error => {
+        console.error('✗ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// Prompt for PWA installation
+let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'flex';
+  console.log('PWA is installable');
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('✓ PWA installed successfully');
+  deferredPrompt = null;
+  installBtn.style.display = 'none';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  }
+});
 </script>
 </body>
 </html>

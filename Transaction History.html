@@ -6,13 +6,14 @@
 <title>Transaction History - PalmPay</title>
 <style>
   :root {
-    --bg: #0c0c0f;
-    --panel: #0f1720;
+    --bg: #0f0f12;
+    --panel: #17171c;
     --muted: #9aa2b2;
     --purple: #7c3aed;
     --purple-2: #5b21b6;
-    --card: #111217;
+    --card: #17171c;
     --accent: #ffd166;
+    --receipt-bg: #17171c;
   }
   [data-theme="light"] {
     --bg: #f5f5f7;
@@ -32,6 +33,7 @@
     color: var(--text-color, #fff); 
     -webkit-font-smoothing: antialiased; 
     overflow-x: hidden;
+    line-height: 1.5;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
   [data-theme="light"] {
@@ -167,6 +169,7 @@
     align-items: center; 
     transition: background 0.3s ease;
     cursor: pointer;
+    position: relative;
   }
   [data-theme="light"] {
     --tx-bg: #f9fafb;
@@ -186,6 +189,33 @@
   .tx-amount { font-weight: 700; font-size: 14px; transition: color 0.3s ease; }
   .tx-amount.in { color: #22c55e; }
   .tx-amount.out { color: #ef4444; }
+  .tx-delete-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    opacity: 0;
+    transition: all 0.2s ease;
+    z-index: 2;
+  }
+  ul.tx li:hover .tx-delete-btn {
+    opacity: 1;
+  }
+  .tx-delete-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: translateY(-50%) scale(1.1);
+  }
   /* Full Screen Receipt */
   .receipt-screen { 
     position: fixed; 
@@ -266,71 +296,125 @@
     cursor: pointer; 
     font-size: 12px; 
   }
-  .receipt-container { 
-    background: var(--receipt-bg, #0c0c0f); 
-    padding: 20px; 
-    border-radius: 12px; 
-    margin: 0 0 20px 0; 
+  .receipt-container {
+    background: var(--receipt-bg, #17171c);
+    padding: 24px;
+    border-radius: 20px;
+    margin: 0 0 20px 0;
     transition: background 0.3s ease;
-    border: 1px solid var(--card-border, rgba(255,255,255,0.02));
+    position: relative;
+    overflow: hidden;
   }
-  [data-theme="light"] {
-    --card-border: rgba(0,0,0,0.1);
+  .receipt-container::before {
+    content: "PalmPay  PalmPay  PalmPay  PalmPay";
+    position: absolute;
+    inset: 0;
+    color: rgba(255,255,255,0.03);
+    font-size: 40px;
+    transform: rotate(-20deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
   }
   [data-theme="light"] {
     --receipt-bg: #ffffff;
   }
-  .receipt-logo { 
-    display: flex; 
-    align-items: center; 
-    gap: 6px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    margin-bottom: 16px; 
+  .receipt-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-amount { 
-    font-size: 32px; 
-    font-weight: bold; 
-    color: var(--purple); 
-    text-align: center; 
-    margin-bottom: 8px; 
+  .receipt-amount {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    color: #7c6cff;
+    margin-bottom: 6px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-status { 
-    font-size: 18px; 
-    text-align: center; 
-    margin-bottom: 4px; 
+  .receipt-status {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 2;
+  }
+  .receipt-date {
+    text-align: center;
+    font-size: 13px;
+    color: #b3b3b3;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .divider {
+    border-top: 1px dashed #2a2a2f;
+    margin: 18px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    position: relative;
+    z-index: 2;
+  }
+  .label {
+    color: #cfcfcf;
+    font-size: 14px;
+  }
+  .value {
+    text-align: right;
+    font-size: 14px;
+  }
+  .value strong {
+    display: block;
+    font-weight: 600;
     color: var(--text-color, #fff);
     transition: color 0.3s ease;
   }
-  .receipt-date { 
-    color: var(--muted); 
-    font-size: 12px; 
-    text-align: center; 
-    margin-bottom: 24px; 
+  .sub {
+    font-size: 13px;
+    color: #a6a6a6;
+    margin-top: 2px;
   }
-  .receipt-section { 
-    margin-bottom: 24px; 
+  [data-theme="light"] .label {
+    color: #666;
   }
-  .receipt-label { 
-    color: var(--muted); 
-    font-size: 14px; 
-    margin-bottom: 4px; 
+  [data-theme="light"] .sub {
+    color: #888;
   }
-  .receipt-value { 
-    font-size: 14px; 
-    font-weight: 600; 
-    color: var(--text-color, #fff);
-    transition: color 0.3s ease;
+  .section-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-sub-value { 
-    color: var(--muted); 
-    font-size: 12px; 
-    margin-top: 2px; 
+  .receipt-footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: #9b9b9b;
+    margin-top: 20px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 2;
   }
-  .receipt-info-row { 
+  .receipt-info {
     display: flex; 
     justify-content: space-between; 
     margin-bottom: 8px; 
+    z-index: 1;
+    position: relative;
   }
   .receipt-info-label { 
     color: var(--muted); 
@@ -342,6 +426,7 @@
     max-width: 60%; 
     color: var(--text-color, #fff);
     transition: color 0.3s ease;
+    font-family: 'Courier New', monospace;
   }
   .receipt-footer-note { 
     color: var(--purple); 
@@ -349,6 +434,9 @@
     text-align: center; 
     margin-top: 24px; 
     margin-bottom: 24px; 
+    z-index: 1;
+    position: relative;
+    letter-spacing: 0.5px;
   }
   /* Responsive */
   @media (min-width: 600px) {
@@ -360,6 +448,16 @@
     .header { padding: 10px; }
   }
 </style>
+<!-- PWA Configuration -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c3aed">
+<meta name="description" content="A fast, secure banking dashboard with Paystack integration">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%237c3aed' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='sans-serif'>P</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%237c3aed' width='180' height='180' rx='40'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dy='.3em' font-family='sans-serif'>P</text></svg>">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PalmPay">
 </head>
 <body>
 <div class="app" id="app">
@@ -488,11 +586,42 @@ const senderAccountMask = '904***9211';
 
 /* helpers */
 function genId() { return Math.random().toString(36).slice(2, 14); }
-function genSessId() { return Math.floor(Math.random() * 1e15) + ' ' + Math.floor(Math.random() * 1e16); }
+function genSessId() { return Math.floor(Math.random() * 1e15) + ' ' + Math.floor(Math.random() * 1e14); }
 function formatNGN(n) { return '₦ ' + Number(n).toLocaleString('en-NG', {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function getFormattedDate(ts) {
   const date = new Date(ts);
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+}
+
+function deleteTransaction(txId) {
+  if (confirm('Are you sure you want to delete this transaction? This action cannot be undone.')) {
+    // Find the transaction to get its amount for balance adjustment
+    const txToDelete = transactions.find(tx => tx.id === txId);
+    if (txToDelete) {
+      // Remove the transaction from the array
+      transactions = transactions.filter(tx => tx.id !== txId);
+      
+      // Update localStorage
+      localStorage.setItem(LS_TX, JSON.stringify(transactions));
+      
+      // Update balance in index.html by adjusting it
+      const currentBalance = parseFloat(localStorage.getItem(LS_BAL) || '556489.00');
+      const newBalance = currentBalance - txToDelete.amount; // Subtract the transaction amount
+      localStorage.setItem(LS_BAL, newBalance.toFixed(2));
+      
+      // Re-render the transaction list and balance summary
+      calculateBalanceSummary();
+      renderRecent();
+      
+      // Close receipt if it was open for this transaction
+      if (selectedTxId === txId) {
+        receiptScreen.classList.remove('active');
+      }
+      
+      // Show success message
+      alert('Transaction deleted successfully.');
+    }
+  }
 }
 
 /* renderers */
@@ -575,7 +704,7 @@ function renderRecent() {
     li.className = 'tx';
     // Extract recipient name for display
     const displayName = extractRecipientName(tx.name);
-    const category = tx.name.includes('Interbank') ? displayName : 
+    const category = tx.name.includes('Interbank') ? (tx.amount >= 0 && tx.senderName ? tx.senderName : displayName) : 
                      tx.name.includes('Send') ? tx.name.replace('Send - ', '') : 
                      tx.name.includes('Withdraw') ? tx.name.replace('Withdraw to ', '').split(' (')[0] : 
                      tx.name.includes('Auto') ? 'Auto deduct-Flexi Repayment' : 
@@ -603,8 +732,15 @@ function renderRecent() {
         </div>
       </div>
       <div class="tx-amount ${tx.amount >= 0 ? 'in' : 'out'}">${tx.amount >= 0 ? '+' : '-'}${formatNGN(Math.abs(tx.amount)).slice(1)}</div>
+      <button class="tx-delete-btn" title="Delete transaction" data-tx-id="${tx.id}">×</button>
     `;
-    li.addEventListener('click', () => {
+    li.addEventListener('click', (e) => {
+      // Prevent opening receipt if delete button was clicked
+      if (e.target.classList.contains('tx-delete-btn')) {
+        e.stopPropagation();
+        deleteTransaction(tx.id);
+        return;
+      }
       selectedTxId = tx.id;
       receiptScreen.classList.add('active');
       renderReceipt();
@@ -632,7 +768,13 @@ function renderReceipt() {
   let bankName = '';
   let accountNumber = '';
   
-  if (selectedTx.name.includes('Interbank to')) {
+  if (selectedTx.name === 'Interbank Transfer' && selectedTx.amount >= 0) {
+    // Incoming interbank transfer - show sender details
+    recipientName = selectedTx.senderName || 'Unknown Sender';
+    bankName = selectedTx.senderBank || 'Unknown Bank';
+    accountNumber = selectedTx.senderAccount || '';
+    recipientDetails = accountNumber ? `${bankName} | ${accountNumber}` : bankName;
+  } else if (selectedTx.name.includes('Interbank to')) {
     // Match format: "Interbank to AccountName (BankName | AccountNumber)"
     const match = selectedTx.name.match(/Interbank to (.+?) \((.+?)\s*\|\s*(.+?)\)/);
     if (match) {
@@ -696,64 +838,76 @@ function renderReceipt() {
                    selectedTx.name.includes('Add Money') ? 'Add Money / Top Up' : 'Other';
 
   const isIncoming = selectedTx.amount >= 0;
-  const sessId = genSessId();
+  const sessId = selectedTx.sessId || genSessId();
 
   receiptContent.innerHTML = `
     <div class="receipt-container">
-      <div class="receipt-logo">
-        <span style="color:var(--purple);">◎</span> PalmPay
-      </div>
+      <div class="receipt-logo">PalmPay</div>
+
       <div class="receipt-amount">${formatNGN(Math.abs(selectedTx.amount))}</div>
       <div class="receipt-status">Successful Transaction</div>
       <div class="receipt-date">${getFormattedDate(selectedTx.time)}</div>
-      
+
+      <div class="divider"></div>
+
       ${isIncoming ? `
-      <div class="receipt-section">
-        <div class="receipt-label">Recipient:</div>
-        <div class="receipt-value">${userName.toUpperCase()}</div>
-        <div class="receipt-sub-value">PalmPay | ${senderAccountMask}</div>
+      <div class="row">
+        <div class="label">Recipient:</div>
+        <div class="value">
+          <strong>${userName.toUpperCase()}</strong>
+          <div class="sub">PalmPay | ${senderAccountMask}</div>
+        </div>
       </div>
-      <div class="receipt-section">
-        <div class="receipt-label">Sender:</div>
-        <div class="receipt-value">${recipientName}</div>
-        <div class="receipt-sub-value">${recipientDetails}</div>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="label">Sender:</div>
+        <div class="value">
+          <strong>${recipientName}</strong>
+          <div class="sub">${recipientDetails}</div>
+        </div>
       </div>
       ` : `
-      <div class="receipt-section">
-        <div class="receipt-label">Recipient:</div>
-        <div class="receipt-value">${recipientName}</div>
-        <div class="receipt-sub-value">${accountNumber && bankName ? `${bankName} | ${accountNumber}` : (accountNumber ? accountNumber : (bankName ? bankName : recipientDetails))}</div>
+      <div class="row">
+        <div class="label">Recipient:</div>
+        <div class="value">
+          <strong>${recipientName}</strong>
+          <div class="sub">${accountNumber && bankName ? `${bankName} | ${accountNumber}` : (accountNumber ? accountNumber : (bankName ? bankName : recipientDetails))}</div>
+        </div>
       </div>
-      <div class="receipt-section">
-        <div class="receipt-label">Sender:</div>
-        <div class="receipt-value">${userName.toUpperCase()}</div>
-        <div class="receipt-sub-value">PalmPay | ${senderAccountMask}</div>
+      <div class="divider"></div>
+      <div class="row">
+        <div class="label">Sender:</div>
+        <div class="value">
+          <strong>${userName.toUpperCase()}</strong>
+          <div class="sub">PalmPay | ${senderAccountMask}</div>
+        </div>
       </div>
       `}
-      
-      <div class="receipt-section">
-        <div class="receipt-label">Transaction Info:</div>
-        <div class="receipt-info-row">
-          <div class="receipt-info-label">Transaction Type</div>
-          <div class="receipt-info-value">${category}</div>
-        </div>
-        <div class="receipt-info-row">
-          <div class="receipt-info-label">Transaction ID</div>
-          <div class="receipt-info-value">${selectedTx.id}</div>
-        </div>
-        <div class="receipt-info-row">
-          <div class="receipt-info-label">Session ID</div>
-          <div class="receipt-info-value">${sessId}</div>
-        </div>
-        <div class="receipt-info-row">
-          <div class="receipt-info-label">Amount</div>
-          <div class="receipt-info-value">${formatNGN(Math.abs(selectedTx.amount))}</div>
-        </div>
-        <div class="receipt-info-row">
-          <div class="receipt-info-label">Status</div>
-          <div class="receipt-info-value" style="color: #22c55e;">Successful</div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">Transaction Info:</div>
+
+      <div class="row">
+        <div class="label">Transaction Type</div>
+        <div class="value">${category}</div>
+      </div>
+
+      <div class="row" style="margin-top: 10px;">
+        <div class="label">Transaction ID</div>
+        <div class="value">${selectedTx.id}</div>
+      </div>
+
+      <div class="row" style="margin-top: 10px;">
+        <div class="label">Session ID</div>
+        <div class="value">
+          ${sessId.slice(0, 15)}<br/>
+          ${sessId.slice(15)}
         </div>
       </div>
+
+      <div class="divider"></div>
+
       <div class="receipt-footer-note">Enjoy Seamless and Unlimited Free Transfers to All Banks.</div>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;margin-bottom:20px">
@@ -784,6 +938,34 @@ statusFilter.addEventListener('change', () => {
 /* init */
 calculateBalanceSummary();
 renderRecent();
+</script>
+
+<!-- PWA Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('✓ Service Worker registered:', registration.scope);
+      })
+      .catch(error => {
+        console.error('✗ Service Worker registration failed:', error);
+      });
+  });
+}
+
+// Prompt for PWA installation
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  console.log('PWA is installable');
+});
+
+window.addEventListener('appinstalled', () => {
+  console.log('✓ PWA installed successfully');
+  deferredPrompt = null;
+});
 </script>
 </body>
 </html>
